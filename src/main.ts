@@ -12,16 +12,24 @@ const button = document.getElementById("increment")!;
 const counterElement = document.getElementById("counter")!;
 
 function updateCounter() {
-  counterElement.textContent = counter.toString();
+  counterElement.textContent = counter.toFixed(2);
 }
 
 button.addEventListener("click", () => {
   counter++;
-  console.log("Jenalee was here :p"); // Jenalee Nguyen jnguy405@ucsc.edu
   updateCounter();
 });
 
-setInterval(() => {
-  counter++;
+let lastTime = performance.now();
+
+function animate(time: number) {
+  const delta = time - lastTime;
+  lastTime = time;
+
+  counter += delta / 1000;
   updateCounter();
-}, 1000);
+
+  requestAnimationFrame(animate);
+}
+
+requestAnimationFrame(animate);
