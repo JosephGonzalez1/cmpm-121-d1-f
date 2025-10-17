@@ -1,6 +1,8 @@
-import exampleIconUrl from "./noun-paperclip-7598668-00449F.png";
+import fireEmoji from "./Fire.jpg";
 import "./style.css";
 
 document.body.innerHTML = `
-  <p>Example image asset: <img src="${exampleIconUrl}" class="icon" /></p>
+  <button id="increment">
+    <img src="${fireEmoji}" class="icon" />
+  </button>
 `;
