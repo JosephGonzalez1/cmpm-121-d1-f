@@ -5,25 +5,24 @@ let counter = 0;
 let growthRate = 0;
 let lastTime = performance.now();
 
-// Define your upgrades in a single data structure
 interface Upgrade {
   name: string;
+  baseCost: number;
   cost: number;
   rate: number;
   count: number;
 }
 
 const upgrades: Upgrade[] = [
-  { name: "Wood", cost: 10, rate: 0.1, count: 0 },
-  { name: "Charcoal", cost: 100, rate: 2.0, count: 0 },
-  { name: "Gasoline", cost: 1000, rate: 50.0, count: 0 },
+  { name: "Wood", baseCost: 10, cost: 10, rate: 0.1, count: 0 },
+  { name: "Charcoal", baseCost: 100, cost: 100, rate: 2.0, count: 0 },
+  { name: "Gasoline", baseCost: 1000, cost: 1000, rate: 50.0, count: 0 },
 ];
 
 document.body.innerHTML = `
   <p>🔥 Counter: <span id="counter">0</span></p>
   <p>⏫ Growth Rate: <span id="rate">0.00</span> units/sec</p>
   <button id="increment">Fire: <img src="${fireEmoji}" class="icon" /></button>
-
   <div id="shop"></div>
 `;
 
@@ -34,19 +33,20 @@ const incrementButton = document.getElementById(
 ) as HTMLButtonElement;
 const shopElement = document.getElementById("shop") as HTMLDivElement;
 
-// Create upgrade buttons dynamically
 upgrades.forEach((upgrade) => {
+  const wrapper = document.createElement("div");
   const button = document.createElement("button");
+  const countDisplay = document.createElement("span");
+
   button.id = `upgrade-${upgrade.name}`;
-  button.textContent =
-    `Buy ${upgrade.name} (Cost: ${upgrade.cost}, +${upgrade.rate}/s)`;
+  countDisplay.id = `count-${upgrade.name}`;
+
+  button.textContent = `Buy ${upgrade.name} (Cost: ${
+    upgrade.cost.toFixed(2)
+  }, +${upgrade.rate}/s)`;
+  countDisplay.textContent = ` | Owned: ${upgrade.count}`;
   button.disabled = true;
 
-  const countDisplay = document.createElement("span");
-  countDisplay.id = `count-${upgrade.name}`;
-  countDisplay.textContent = ` | Owned: 0`;
-
-  const wrapper = document.createElement("div");
   wrapper.appendChild(button);
   wrapper.appendChild(countDisplay);
   shopElement.appendChild(wrapper);
@@ -56,6 +56,7 @@ upgrades.forEach((upgrade) => {
       counter -= upgrade.cost;
       upgrade.count++;
       growthRate += upgrade.rate;
+      upgrade.cost *= 1.15;
       updateDisplay();
     }
   });
@@ -64,7 +65,6 @@ upgrades.forEach((upgrade) => {
 function updateDisplay() {
   counterElement.textContent = counter.toFixed(2);
   rateElement.textContent = growthRate.toFixed(2);
-
   upgrades.forEach((upgrade) => {
     const button = document.getElementById(
       `upgrade-${upgrade.name}`,
@@ -73,6 +73,9 @@ function updateDisplay() {
       `count-${upgrade.name}`,
     ) as HTMLSpanElement;
     button.disabled = counter < upgrade.cost;
+    button.textContent = `Buy ${upgrade.name} (Cost: ${
+      upgrade.cost.toFixed(2)
+    }, +${upgrade.rate}/s)`;
     countDisplay.textContent = ` | Owned: ${upgrade.count}`;
   });
 }
@@ -85,9 +88,7 @@ incrementButton.addEventListener("click", () => {
 function animate(time: number) {
   const delta = time - lastTime;
   lastTime = time;
-
   counter += growthRate * (delta / 1000);
-
   updateDisplay();
   requestAnimationFrame(animate);
 }
