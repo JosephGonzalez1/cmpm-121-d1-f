@@ -20,7 +20,7 @@ const upgrades: Upgrade[] = [
 ];
 
 document.body.innerHTML = `
-  <p>🔥 Counter: <span id="counter">0</span></p>
+  <p>🔥 Fire: <span id="counter">0</span></p>
   <p>⏫ Growth Rate: <span id="rate">0.00</span> units/sec</p>
   <button id="increment">Fire: <img src="${fireEmoji}" class="icon" /></button>
   <div id="shop"></div>
