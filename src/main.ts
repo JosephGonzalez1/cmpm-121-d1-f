@@ -1,94 +1,94 @@
 import fireEmoji from "./Fire.jpg";
 import "./style.css";
 
-let counter = 0;
-let growthRate = 0;
+let fire = 0;
+let totalOutput = 0;
 let lastTime = performance.now();
 
-interface Upgrade {
+interface Item {
   name: string;
-  baseCost: number;
-  cost: number;
-  rate: number;
-  count: number;
+  basePrice: number;
+  price: number;
+  output: number;
+  owned: number;
 }
 
-const upgrades: Upgrade[] = [
-  { name: "Wood", baseCost: 10, cost: 10, rate: 0.1, count: 0 },
-  { name: "Charcoal", baseCost: 100, cost: 100, rate: 2.0, count: 0 },
-  { name: "Gasoline", baseCost: 1000, cost: 1000, rate: 50.0, count: 0 },
+const availableItems: Item[] = [
+  { name: "Wood", basePrice: 10, price: 10, output: 0.1, owned: 0 },
+  { name: "Charcoal", basePrice: 100, price: 100, output: 2.0, owned: 0 },
+  { name: "Gasoline", basePrice: 1000, price: 1000, output: 50.0, owned: 0 },
 ];
 
 document.body.innerHTML = `
-  <p>🔥 Fire: <span id="counter">0</span></p>
-  <p>⏫ Growth Rate: <span id="rate">0.00</span> units/sec</p>
-  <button id="increment">Fire: <img src="${fireEmoji}" class="icon" /></button>
+  <p>🔥 Fire: <span id="fire">0</span></p>
+  <p>⏫ Spread Rate: <span id="rate">0.00</span> fire/sec</p>
+  <button id="increment">Spread Fire: <img src="${fireEmoji}" class="icon" /></button>
   <div id="shop"></div>
 `;
 
-const counterElement = document.getElementById("counter") as HTMLSpanElement;
+const fireElement = document.getElementById("fire") as HTMLSpanElement;
 const rateElement = document.getElementById("rate") as HTMLSpanElement;
 const incrementButton = document.getElementById(
   "increment",
 ) as HTMLButtonElement;
 const shopElement = document.getElementById("shop") as HTMLDivElement;
 
-upgrades.forEach((upgrade) => {
+for (const item of availableItems) {
   const wrapper = document.createElement("div");
   const button = document.createElement("button");
-  const countDisplay = document.createElement("span");
+  const ownedDisplay = document.createElement("span");
 
-  button.id = `upgrade-${upgrade.name}`;
-  countDisplay.id = `count-${upgrade.name}`;
-
-  button.textContent = `Buy ${upgrade.name} (Cost: ${
-    upgrade.cost.toFixed(2)
-  }, +${upgrade.rate}/s)`;
-  countDisplay.textContent = ` | Owned: ${upgrade.count}`;
+  button.id = `buy-${item.name}`;
+  ownedDisplay.id = `owned-${item.name}`;
+  button.textContent = `Buy ${item.name} (Price: ${
+    item.price.toFixed(2)
+  }, +${item.output}/s)`;
+  ownedDisplay.textContent = ` | Owned: ${item.owned}`;
   button.disabled = true;
 
   wrapper.appendChild(button);
-  wrapper.appendChild(countDisplay);
+  wrapper.appendChild(ownedDisplay);
   shopElement.appendChild(wrapper);
 
   button.addEventListener("click", () => {
-    if (counter >= upgrade.cost) {
-      counter -= upgrade.cost;
-      upgrade.count++;
-      growthRate += upgrade.rate;
-      upgrade.cost *= 1.15;
+    if (fire >= item.price) {
+      fire -= item.price;
+      item.owned++;
+      totalOutput += item.output;
+      item.price *= 1.15;
       updateDisplay();
     }
   });
-});
+}
 
 function updateDisplay() {
-  counterElement.textContent = counter.toFixed(2);
-  rateElement.textContent = growthRate.toFixed(2);
-  upgrades.forEach((upgrade) => {
+  fireElement.textContent = fire.toFixed(2);
+  rateElement.textContent = totalOutput.toFixed(2);
+
+  for (const item of availableItems) {
     const button = document.getElementById(
-      `upgrade-${upgrade.name}`,
+      `buy-${item.name}`,
     ) as HTMLButtonElement;
-    const countDisplay = document.getElementById(
-      `count-${upgrade.name}`,
+    const ownedDisplay = document.getElementById(
+      `owned-${item.name}`,
     ) as HTMLSpanElement;
-    button.disabled = counter < upgrade.cost;
-    button.textContent = `Buy ${upgrade.name} (Cost: ${
-      upgrade.cost.toFixed(2)
-    }, +${upgrade.rate}/s)`;
-    countDisplay.textContent = ` | Owned: ${upgrade.count}`;
-  });
+    button.disabled = fire < item.price;
+    button.textContent = `Buy ${item.name} (Price: ${
+      item.price.toFixed(2)
+    }, +${item.output}/s)`;
+    ownedDisplay.textContent = ` | Owned: ${item.owned}`;
+  }
 }
 
 incrementButton.addEventListener("click", () => {
-  counter++;
+  fire++;
   updateDisplay();
 });
 
 function animate(time: number) {
   const delta = time - lastTime;
   lastTime = time;
-  counter += growthRate * (delta / 1000);
+  fire += totalOutput * (delta / 1000);
   updateDisplay();
   requestAnimationFrame(animate);
 }
