@@ -11,12 +11,53 @@ interface Item {
   price: number;
   output: number;
   owned: number;
+  description: string;
 }
 
 const availableItems: Item[] = [
-  { name: "Wood", basePrice: 10, price: 10, output: 0.1, owned: 0 },
-  { name: "Charcoal", basePrice: 100, price: 100, output: 2.0, owned: 0 },
-  { name: "Gasoline", basePrice: 1000, price: 1000, output: 50.0, owned: 0 },
+  {
+    name: "Wood",
+    basePrice: 10,
+    price: 10,
+    output: 0.1,
+    owned: 0,
+    description: "Dry logs that help your fire spread a little faster.",
+  },
+  {
+    name: "Charcoal",
+    basePrice: 100,
+    price: 100,
+    output: 2.0,
+    owned: 0,
+    description:
+      "Burns hotter and longer than wood — perfect for fueling the flames.",
+  },
+  {
+    name: "Gasoline",
+    basePrice: 1000,
+    price: 1000,
+    output: 50.0,
+    owned: 0,
+    description:
+      "Highly flammable liquid. Great for rapid fire expansion (use carefully!).",
+  },
+  {
+    name: "Propane Tank",
+    basePrice: 10000,
+    price: 10000,
+    output: 250.0,
+    owned: 0,
+    description:
+      "Pressurized fuel source — ignite it and watch your fire skyrocket.",
+  },
+  {
+    name: "Nuclear Fuel",
+    basePrice: 100000,
+    price: 100000,
+    output: 2000.0,
+    owned: 0,
+    description: "The ultimate energy source. It burns with unstoppable power.",
+  },
 ];
 
 document.body.innerHTML = `
@@ -37,6 +78,7 @@ for (const item of availableItems) {
   const wrapper = document.createElement("div");
   const button = document.createElement("button");
   const ownedDisplay = document.createElement("span");
+  const desc = document.createElement("p");
 
   button.id = `buy-${item.name}`;
   ownedDisplay.id = `owned-${item.name}`;
@@ -44,10 +86,16 @@ for (const item of availableItems) {
     item.price.toFixed(2)
   }, +${item.output}/s)`;
   ownedDisplay.textContent = ` | Owned: ${item.owned}`;
+  desc.textContent = item.description;
+  desc.style.fontStyle = "italic";
+  desc.style.fontSize = "0.9em";
+  desc.style.color = "#ccc";
+
   button.disabled = true;
 
   wrapper.appendChild(button);
   wrapper.appendChild(ownedDisplay);
+  wrapper.appendChild(desc);
   shopElement.appendChild(wrapper);
 
   button.addEventListener("click", () => {
