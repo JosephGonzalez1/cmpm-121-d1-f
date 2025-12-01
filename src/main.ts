@@ -1,10 +1,12 @@
 import fireEmoji from "./Fire.jpg";
 import "./style.css";
 
+// Game State
 let currentHeat = 0;
 let heatGenerationRate = 0;
 let lastTime = performance.now();
 
+// Item Definitions
 interface Item {
   name: string;
   basePrice: number;
@@ -60,6 +62,7 @@ const availableItems: Item[] = [
   },
 ];
 
+// DOM Construction
 document.body.innerHTML = `
   <p>🔥 Heat: <span id="fire">0</span></p>
   <p>⏫ Generation Rate: <span id="rate">0.00</span> heat/sec</p>
@@ -67,6 +70,7 @@ document.body.innerHTML = `
   <div id="shop"></div>
 `;
 
+// UI Elements
 const fireElement = document.getElementById("fire") as HTMLSpanElement;
 const rateElement = document.getElementById("rate") as HTMLSpanElement;
 const incrementButton = document.getElementById(
@@ -74,6 +78,7 @@ const incrementButton = document.getElementById(
 ) as HTMLButtonElement;
 const shopElement = document.getElementById("shop") as HTMLDivElement;
 
+// DOM Construction (Shop Items)
 for (const item of availableItems) {
   const wrapper = document.createElement("div");
   const button = document.createElement("button");
@@ -98,6 +103,7 @@ for (const item of availableItems) {
   wrapper.appendChild(desc);
   shopElement.appendChild(wrapper);
 
+  // Event Listeners (Shop Buttons)
   button.addEventListener("click", () => {
     if (currentHeat >= item.price) {
       currentHeat -= item.price;
@@ -109,6 +115,7 @@ for (const item of availableItems) {
   });
 }
 
+// Update Logic
 function updateDisplay() {
   fireElement.textContent = currentHeat.toFixed(2);
   rateElement.textContent = heatGenerationRate.toFixed(2);
@@ -120,6 +127,7 @@ function updateDisplay() {
     const ownedDisplay = document.getElementById(
       `owned-${item.name}`,
     ) as HTMLSpanElement;
+
     button.disabled = currentHeat < item.price;
     button.textContent = `Buy ${item.name} (Price: ${
       item.price.toFixed(2)
@@ -128,6 +136,7 @@ function updateDisplay() {
   }
 }
 
+// Game Loop
 function animate(time: number) {
   const delta = time - lastTime;
   lastTime = time;
@@ -140,6 +149,7 @@ function animate(time: number) {
 
 requestAnimationFrame(animate);
 
+// Event Listeners (Manual Click)
 incrementButton.addEventListener("click", () => {
   currentHeat++;
   updateDisplay();
