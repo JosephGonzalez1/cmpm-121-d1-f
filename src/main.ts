@@ -128,17 +128,19 @@ function updateDisplay() {
   }
 }
 
-incrementButton.addEventListener("click", () => {
-  currentHeat++;
-  updateDisplay();
-});
-
 function animate(time: number) {
   const delta = time - lastTime;
   lastTime = time;
+
   currentHeat += heatGenerationRate * (delta / 1000);
   updateDisplay();
+
   requestAnimationFrame(animate);
 }
 
 requestAnimationFrame(animate);
+
+incrementButton.addEventListener("click", () => {
+  currentHeat++;
+  updateDisplay();
+});
