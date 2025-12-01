@@ -1,8 +1,8 @@
 import fireEmoji from "./Fire.jpg";
 import "./style.css";
 
-let fire = 0;
-let totalOutput = 0;
+let currentHeat = 0;
+let heatGenerationRate = 0;
 let lastTime = performance.now();
 
 interface Item {
@@ -61,9 +61,9 @@ const availableItems: Item[] = [
 ];
 
 document.body.innerHTML = `
-  <p>🔥 Fire: <span id="fire">0</span></p>
-  <p>⏫ Spread Rate: <span id="rate">0.00</span> fire/sec</p>
-  <button id="increment">Spread Fire: <img src="${fireEmoji}" class="icon" /></button>
+  <p>🔥 Heat: <span id="fire">0</span></p>
+  <p>⏫ Generation Rate: <span id="rate">0.00</span> heat/sec</p>
+  <button id="increment">Generate Heat: <img src="${fireEmoji}" class="icon" /></button>
   <div id="shop"></div>
 `;
 
@@ -99,10 +99,10 @@ for (const item of availableItems) {
   shopElement.appendChild(wrapper);
 
   button.addEventListener("click", () => {
-    if (fire >= item.price) {
-      fire -= item.price;
+    if (currentHeat >= item.price) {
+      currentHeat -= item.price;
       item.owned++;
-      totalOutput += item.output;
+      heatGenerationRate += item.output;
       item.price *= 1.15;
       updateDisplay();
     }
@@ -110,8 +110,8 @@ for (const item of availableItems) {
 }
 
 function updateDisplay() {
-  fireElement.textContent = fire.toFixed(2);
-  rateElement.textContent = totalOutput.toFixed(2);
+  fireElement.textContent = currentHeat.toFixed(2);
+  rateElement.textContent = heatGenerationRate.toFixed(2);
 
   for (const item of availableItems) {
     const button = document.getElementById(
@@ -120,7 +120,7 @@ function updateDisplay() {
     const ownedDisplay = document.getElementById(
       `owned-${item.name}`,
     ) as HTMLSpanElement;
-    button.disabled = fire < item.price;
+    button.disabled = currentHeat < item.price;
     button.textContent = `Buy ${item.name} (Price: ${
       item.price.toFixed(2)
     }, +${item.output}/s)`;
@@ -129,14 +129,14 @@ function updateDisplay() {
 }
 
 incrementButton.addEventListener("click", () => {
-  fire++;
+  currentHeat++;
   updateDisplay();
 });
 
 function animate(time: number) {
   const delta = time - lastTime;
   lastTime = time;
-  fire += totalOutput * (delta / 1000);
+  currentHeat += heatGenerationRate * (delta / 1000);
   updateDisplay();
   requestAnimationFrame(animate);
 }
