@@ -1,6 +1,7 @@
 body {
   margin: 0;
   padding: 0;
+  /* Background image inspiration and dark overlay */
   background:
     linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url("fire-effect-with-dark-red-gradient-background-free-video.jpg");
@@ -33,8 +34,26 @@ button {
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.1);
   color: white;
+  transition: all 0.2s ease-in-out;
 }
 
 button:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+/* Glowing button idea to make it more obvious */
+#increment {
+  padding: 20px 40px;
+  font-size: 2em;
+  font-weight: bold;
+  border-radius: 12px;
+  background: linear-gradient(45deg, #ff4500, #ffae42);
+  color: white;
+  border: 2px solid #fff;
+  box-shadow: 0 0 20px #ff4500, 0 0 40px #ffae42, 0 0 60px #ff4500;
+  transition: all 0.2s ease-in-out;
+}
+
+#increment:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px #ff4500, 0 0 60px #ffae42, 0 0 90px #ff4500;
 }
